@@ -8,6 +8,7 @@ ofxOscJSONParameterSync::ofxOscJSONParameterSync(void)
 
 ofxOscJSONParameterSync::~ofxOscJSONParameterSync(void)
 {
+	jsonSyncGroup = NULL;
 }
 
 void ofxOscJSONParameterSync::setup(ofParameterGroup & group, int localPort, string host, int remotePort){
