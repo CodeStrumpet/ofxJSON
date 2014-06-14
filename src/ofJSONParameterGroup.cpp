@@ -14,8 +14,6 @@ ofJSONParameterGroup::~ofJSONParameterGroup(void)
 ofxJSONElement ofJSONParameterGroup::jsonElement() {
 
 	ofxJSONElement children = ofxJSONElement::Value(Json::arrayValue);
-	
-	cout << "*****" << endl;
 	for (int i = 0; i < this->size(); i++) {
 		
 		ofxJSONElement subElement = ofxJSONElement::Value(Json::objectValue);
@@ -25,7 +23,7 @@ ofxJSONElement ofJSONParameterGroup::jsonElement() {
 		if (type == "class ofParameterGroup") {
 
 			subElement["type"] = "ofParameterGroup";
-
+			subElement["escapedName"] = this->getGroup(i).getEscapedName();
 			ofParameterGroup group = this->getGroup(i);
 
 			ofJSONParameterGroup jsonGroup = ofJSONParameterGroup();
@@ -33,29 +31,23 @@ ofxJSONElement ofJSONParameterGroup::jsonElement() {
 				jsonGroup.add(group.get(j));
 				jsonGroup.setName(group.getName());
 			}
-			cout << "+++++" << endl;
-
 			subElement["children"] = jsonGroup.jsonElement();
-			
-			cout << "+++++" << endl;
-			//ofJSONParameterGroup group = ofJSONParameterGroup(this->get(i));
-			//((ofJSONParameterGroup) (this->get(i))).jsonElement();
 		} else if (type == "class ofParameter<bool>") { // handle bool
 			subElement["type"] = "bool";
 			subElement["value"] = this->getBool(i).get();
-			cout << "bool" << endl;
+			subElement["escapedName"] = this->getBool(i).getEscapedName();
 		} else if (type == "class ofParameter<float>") { // handle float
 			subElement["type"] = "float";
 			subElement["value"] = this->getFloat(i).get();
 			subElement["min"] = this->getFloat(i).getMin();
 			subElement["max"] = this->getFloat(i).getMax();
-			cout << "float" << endl;
+			subElement["escapedName"] = this->getFloat(i).getEscapedName();
 		} else if (type == "class ofParameter<int>") { // handle int
 			subElement["type"] = "int";
 			subElement["value"] = this->getInt(i).get();
 			subElement["min"] = this->getInt(i).getMin();
 			subElement["max"] = this->getInt(i).getMax();
-			cout << "int" << endl;
+			subElement["escapedName"] = this->getInt(i).getEscapedName();
 		}  else if (type == "class ofParameter<class ofVec2f>") { // handle ofVec2f
 			subElement["type"] = "ofVec2f";
 			ofxJSONElement value = ofxJSONElement::Value(Json::objectValue);
@@ -63,6 +55,7 @@ ofxJSONElement ofJSONParameterGroup::jsonElement() {
 			value["x"] = val.x;
 			value["y"] = val.y;
 			subElement["value"] = value;
+			subElement["escapedName"] = this->getVec2f(i).getEscapedName();
 
 			ofxJSONElement min = ofxJSONElement::Value(Json::objectValue);
 			ofVec2f minVec = this->getVec2f(i).getMin();
@@ -76,7 +69,6 @@ ofxJSONElement ofJSONParameterGroup::jsonElement() {
 			max["y"] = maxVec.y;
 			subElement["max"] = max;
 
-			cout << "ofVec2f" << endl;
 		}  else if (type == "class ofParameter<class ofColor_<unsigned char> >") { // handle ofColor
 			subElement["type"] = "ofColor";
 			ofColor color = this->getColor(i);
@@ -86,8 +78,8 @@ ofxJSONElement ofJSONParameterGroup::jsonElement() {
 			value["b"] = color.b;
 			value["a"] = color.a;
 			subElement["value"] = value;
+			subElement["escapedName"] = this->getColor(i).getEscapedName();
 
-			cout << "ofColor" << endl;
 		} else {
 			cout << "unrecognized type: " << this->getType(i) << endl;
 			continue;
@@ -97,7 +89,6 @@ ofxJSONElement ofJSONParameterGroup::jsonElement() {
 		
 		children.append(subElement);
 	}
-	cout << "*****" << endl;
 
 	ofxJSONElement element = ofxJSONElement::Value(Json::objectValue);
 	element["name"] = this->getName();
