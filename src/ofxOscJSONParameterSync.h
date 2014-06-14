@@ -1,6 +1,5 @@
 #pragma once
 #include "ofxOscParameterSync.h"
-#include "ofJSONParameterGroup.h"
 #include "ofxOscSender.h"
 #include "ofxJSONElement.h"
 
@@ -14,7 +13,7 @@ public:
 	void setup(ofParameterGroup & group, int localPort, string host, int remotePort);
 
 	void sendFullParameterSet();
-	ofxJSONElement syncGroupJSONElement();
+	ofxJSONElement parameterGroupJSONElement(ofParameterGroup *group);
 
 	ofxOscSender jsonSender;
 	ofParameterGroup * jsonSyncGroup; 
